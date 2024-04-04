@@ -41,10 +41,15 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         params_dict = {k: v[0] if len(v) == 1 else v for k, v in params.items()}
 
         client_ip = self.client_address[0]
-        res = cal.DEF_CALL(path, ip=client_ip, **params_dict)
+        try:
+            res = cal.DEF_CALL(path, ip=client_ip, **params_dict)
+            status = 200
+        except cal.IpLookUpError as e:
+            res = cal.BAD_REQ_RES(e, "ip-loc lookup failed")
+            status = 400
 
         # set header
-        self.send_response(200)
+        self.send_response(status)
         self.send_header('Content-type', MIME)
         self.end_headers()
         # send response

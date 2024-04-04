@@ -9,6 +9,14 @@ import astropy.units as u
 from astropy.coordinates import Angle
 
 from ip_loc import get_ip_location
+from ip_loc import IpLookUpError  # export
+
+def BAD_REQ_RES(err, addtional_info=""):
+    d = dict(err=str(err),  # get err message
+            addtional_info=addtional_info
+            )
+    
+    return dumps(d).encode('ascii')
 
 def to_earth_loc(lat, lon):
     return EarthLocation.from_geodetic(lat=lat, lon=lon)

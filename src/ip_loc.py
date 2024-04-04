@@ -1,23 +1,32 @@
 
-
+from sys import version_info
 import urllib.request
 import json
 
+if version_info > (3,9,0):
+    def get_status(res): return res.code
+else:
+    # urllib.response.addinfo status is deprecated since version 3.9
+    def get_status(res): return res.status
+
+
 class BadRequest(urllib.error.URLError): pass
 
+class IpLookUpError(LookupError): pass
 def get_ip_location(ip_address: str) -> 'dict[str]':
     '''- On success, returns {'lat': <float>, 'lon': <float>, 'timezone': <str>, ... }
-    - On failure, raises BadRequest'''
+    - On failure, if responce code is not 200, raises BadRequest;
+    - On failure, if ip look-up fails, e.g. a private ip is given, raise IpLookUpError'''
 
     url = "http://ip-api.com/json/" + ip_address
 
     with urllib.request.urlopen(url) as response:
         data = response.read()
-        if response.code != 200:
+        if get_status(response) != 200:
             raise BadRequest()
         location_data = json.loads(data.decode())
     if location_data['status'] == 'fail':
-        raise BadRequest(location_data['message'])
+        raise IpLookUpError(location_data['message'])
     return location_data
 
 
