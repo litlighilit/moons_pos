@@ -2,6 +2,7 @@
 import http.server
 import socketserver
 
+from os import getenv
 from urllib.parse import urlparse, parse_qs
 
     
@@ -20,7 +21,12 @@ def inter():
     )
 
 # listen on:
-port = 3333
+env_port = getenv('MOONS_SRV_PORT')
+if env_port is None:
+    port = 3333
+else:
+    port = int(env_port)
+
 address = ('', port)
 
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):

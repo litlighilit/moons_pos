@@ -1,4 +1,5 @@
 
+from os import getenv
 from json import dumps
 from datetime import datetime
 
@@ -9,17 +10,37 @@ from astropy.coordinates import Angle
 
 from ip_loc import get_ip_location
 
-def _demo_loc():
+def to_earth_loc(lat, lon):
+    return EarthLocation.from_geodetic(lat=lat, lon=lon)
 
-    alat = Angle('''40°42′51″ N''')
-    alon = Angle('''74°00′21″ W''')
+def deg_float_to_earth_loc(lat: float, lon: float):
+    return to_earth_loc(lat = lat * u.deg, lon = lon * u.deg)
+
+def ang_str_to_earch_loc(lat: str, lon: str):
+
+    alat = Angle(lat)
+    alon = Angle(lon)
 
     latitude = alat
     longitude = alon
-    # Or <float> * u.deg 
 
-    location = EarthLocation.from_geodetic(lat=latitude, lon=longitude)
+    location = to_earth_loc(lat=latitude, lon=longitude)
     return location
+
+def _demo_loc():
+    return ang_str_to_earch_loc('''40°42′51″ N''', '''74°00′21″ W''')
+
+def get_def_location() -> 'EarthLocation|None':
+    slon = getenv('MOONS_OBS_LON')
+    slat = getenv('MOONS_OBS_LAT')
+    if slon is None or slat is None:
+        try:
+            lon = float(slon)
+            lat = float(slat)
+            return deg_float_to_earth_loc(lat=lat, lon=lon)
+        except ValueError:
+            return ang_str_to_earch_loc(lat=slat, lon=slon)
+
 
 def get_location(ip: str) -> EarthLocation:
     loc_d = get_ip_location(ip)
@@ -27,10 +48,7 @@ def get_location(ip: str) -> EarthLocation:
     lat = loc_d['lat']
     lon = loc_d['lon']
 
-    latitude = lat * u.deg
-    longitude = lon * u.deg
-
-    location = EarthLocation.from_geodetic(lat=latitude, lon=longitude)
+    location = deg_float_to_earth_loc(lat=lat, lon=lon)
     return location
 
 
@@ -77,7 +95,9 @@ def get_alt_az(name='moon', time: 'str|Time' = None, off: str = None, lon = None
             # XXX: use `try:` to handle error
             location = get_location(ip)
         else:
-            location = _demo_loc()
+            location = get_def_location()
+            if location is None:
+                location = _demo_loc()
 
     # equatorial coordinate -> Altazimuth
     alt_az = moon.transform_to(AltAz(location=location))
