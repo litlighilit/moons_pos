@@ -51,8 +51,8 @@ e.g. when getting request from a local private ip, when `lon` and `lat` is not g
 ### query params
 > All is optional
 
-- lon: float/str, in degrees. latitude of obsolution point. If as str, See [`astropy.coordinates.Angle` doc][] for formats.
-- lat: float/str, in degrees. longitude of obsolution point. If as str, See [`astropy.coordinates.Angle` doc][] for formats.
+- lat: float/str, in degrees. latitude of obsolution point. If as str, See [`astropy.coordinates.Angle` doc][] for formats.
+- lon: float/str, in degrees. longitude of obsolution point. If as str, See [`astropy.coordinates.Angle` doc][] for formats.
 - time: str, e.g. `2000-01-01 00:00:00.000` (*NOTE*: this's UTC time). see [`astropy.time.Time` doc](https://docs.astropy.org/en/stable/time/index.html#time-format) for formats
 - off: str. combination of digits and one-alpha unit, where `h` is hour, `m` is `min`, `s` is `second`...
 
