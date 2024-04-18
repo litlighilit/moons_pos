@@ -56,7 +56,7 @@ e.g. when getting request from a local private ip, when `lon` and `lat` is not g
 - time: str, e.g. `2000-01-01 00:00:00.000` (*NOTE*: this's UTC time). see [`astropy.time.Time` doc](https://docs.astropy.org/en/stable/time/index.html#time-format) for formats
 - off: str. combination of digits and one-alpha unit, where `h` is hour, `m` is `min`, `s` is `second`...
 
-[`astropy.coordinates.Angle` doc](https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html)
+[`astropy.coordinates.Angle` doc]: https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html
 
 
 ## env
